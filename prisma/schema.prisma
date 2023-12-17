@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Professor {
+  id String @id @default(uuid())
+  nome String 
+  cref String
+  email String @unique
+  senha String
+  torneios Torneio[]
+
+  @@map("professor")
+}
+
+model Torneio {
+  id String @id @default(uuid())
+  descricao String?
+  data DateTime
+  campus String
+  img_local String
+  latitude Decimal
+  longitude Decimal
+  equipes Equipe[]
+
+  professor Professor @relation(fields: [id_professor], references: [id])
+  id_professor String
+
+  @@map("torneio")
+}
+
+model Equipe {
+  id String @id @default(uuid())
+  nome String
+  lema String?
+  jogadores Jogador[]
+
+  torneio Torneio @relation(fields: [id_torneio], references: [id])
+  id_torneio String
+
+  @@map("equipe")
+}
+
+model Jogador {
+  id String @id @default(uuid())
+  nome String
+  posicao String
+  idade Int
+  matricula String
+
+  equipe Equipe @relation(fields: [id_equipe], references: [id])
+  id_equipe String
+
+  @@map("jogador")
+}
