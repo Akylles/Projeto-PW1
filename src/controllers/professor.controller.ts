@@ -42,7 +42,7 @@ const buscarPorID = async (req: Request, res: Response) => {
     const {senha:_, ...professor} = req.professor
 
     res.status(200).send({
-        mensagem: "Usuário encontrado com sucesso",
+        mensagem: "Professor encontrado com sucesso",
         professor: professor
     })
 }
@@ -66,7 +66,7 @@ const atualizar = async (req: Request, res: Response) => {
     const {senha:_, ...professor} = await serviceProfessor.atualizarPorId(id, nome, cref, email, senha)
     
     res.status(200).send({
-        mensagem: "Usuário atualizado com sucesso",
+        mensagem: "Professor atualizado com sucesso",
         professor: {
             id: professor.id,
             nome: professor.nome,
@@ -82,7 +82,7 @@ const editarEmailSenha = async (req: Request, res: Response) => {
     const {senha:_, ...professor} = await serviceProfessor.editarEmailSenha(id, email, senha)
     
     res.status(200).send({
-        mensagem: "Usuário atualizado com sucesso",
+        mensagem: "Professor atualizado com sucesso",
         professor: {
             id: professor.id,
             nome: professor.nome,
@@ -97,7 +97,7 @@ const excluir = async (req: Request, res: Response) => {
     const {senha:_, ...professor} = await serviceProfessor.deletar(id)
     
     res.status(200).send({
-        mensagem: "Usuário deletado com sucesso",
+        mensagem: "Professor deletado com sucesso",
         professor: {
             id: professor.id,
             nome: professor.nome,
