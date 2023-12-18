@@ -38,7 +38,7 @@ const autorizaProfessor = async (req: Request, res: Response, next: NextFunction
 }
 
 const idTemTorneio = async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id
+    const id = req.params.id 
     const torneio = await serviceTorneio.buscarPorId(id)
     
     if(!torneio){

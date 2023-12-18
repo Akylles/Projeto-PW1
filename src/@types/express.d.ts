@@ -1,10 +1,11 @@
-import { Professor, Torneio } from "@prisma/client"
+import { Equipe, Professor, Torneio } from "@prisma/client"
 
 declare global{
     namespace Express{
         export interface Request{
             professor: Professor,
-            torneio: Torneio
+            torneio: Torneio,
+            equipe: Equipe
         }
     }
 }
