@@ -1,0 +1,108 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TorneioStatus {
+  ABERTO
+  EM_ANDAMENTO
+  FINALIZADO
+}
+
+enum EquipeStatus {
+  ATIVA
+  ELIMINADA
+  CAMPEA
+}
+
+model Professor {
+  id        String @id @default(uuid())
+  nome      String 
+  cref      String
+  email     String @unique
+  senha     String
+
+  torneios  Torneio[]
+  equipes   Equipe[] // Agora um professor pode ser técnico de várias equipes
+
+  @@map("professor")
+}
+
+model Torneio {
+  id          String @id @default(uuid())
+  descricao   String?
+  data        DateTime
+  campus      String
+  img_local   String
+  latitude    Decimal
+  longitude   Decimal
+  status      TorneioStatus @default(ABERTO)
+
+  professor   Professor @relation(fields: [id_professor], references: [id])
+  id_professor String
+
+  equipes     EquipeTorneio[] // Agora um torneio pode ter várias equipes e vice-versa
+
+  @@map("torneio")
+}
+
+model Equipe {
+  id         String @id @default(uuid())
+  nome       String
+  lema       String?
+  pontuacao  Int @default(0)
+  status     EquipeStatus @default(ATIVA)
+
+  tecnico    Professor @relation(fields: [id_tecnico], references: [id])
+  id_tecnico String
+
+  jogadores  JogadorEquipe[]
+  torneios   EquipeTorneio[] // Agora uma equipe pode jogar em vários torneios
+
+  @@map("equipe")
+}
+
+model Jogador {
+  id        String @id @default(uuid())
+  nome      String
+  posicao   String
+  idade     Int
+  matricula String
+
+  equipes   JogadorEquipe[] // Jogador pode estar em várias equipes
+
+  @@map("jogador")
+}
+
+model JogadorEquipe {
+  id         String @id @default(uuid())
+  id_jogador String
+  id_equipe  String
+
+  jogador    Jogador @relation(fields: [id_jogador], references: [id], onDelete: Cascade)
+  equipe     Equipe  @relation(fields: [id_equipe], references: [id], onDelete: Cascade)
+
+  @@unique([id_jogador, id_equipe]) // Evita duplicatas
+
+  @@map("jogador_equipe")
+}
+
+model EquipeTorneio {
+  id         String @id @default(uuid())
+  id_equipe  String
+  id_torneio String
+
+  equipe  Equipe  @relation(fields: [id_equipe], references: [id], onDelete: Cascade)
+  torneio Torneio @relation(fields: [id_torneio], references: [id], onDelete: Cascade)
+
+  @@unique([id_equipe, id_torneio]) // Evita duplicatas
+
+  @@map("equipe_torneio")
+}

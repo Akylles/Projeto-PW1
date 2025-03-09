@@ -51,11 +51,35 @@ const excluir = async (req: Request, res: Response) => {
 }
 
 
+const transferir = async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const { id_equipe } = req.body;
+
+    if (!id_equipe) {
+        return res.status(400).send({ mensagem: "O campo 'id_equipe' é obrigatório." });
+    }
+
+    try {
+        const jogador = await serviceJogador.atualizarTime(id, id_equipe);
+        res.status(200).send({
+            mensagem: "Jogador transferido com sucesso",
+            jogador
+        });
+    } catch (error) {
+        res.status(500).send({
+            mensagem: "Erro ao transferir jogador",
+            error
+        });
+    }
+};
+
+
 const controllerJogador = {
     cadastrar,
     buscarPorID,
     buscarTodos,
     atualizar,
+    transferir,
     excluir
 }
 

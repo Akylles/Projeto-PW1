@@ -21,6 +21,14 @@ const atualizarPorId = async (id: string, nome: string, posicao: string, idade: 
         data: {nome, posicao, idade, matricula}
     })
 
+
+const atualizarTime = async (id: string, id_equipe: string) => {
+    return await Prisma.jogador.update({
+        where: { id },
+        data: { id_equipe }
+    });
+};
+    
     
 const deletar = async (id: string) => await Prisma.jogador.delete({where: {id}})
 
@@ -30,6 +38,7 @@ const serviceJogador = {
     buscarPorId,
     buscarTodos,
     atualizarPorId,
+    atualizarTime,
     deletar
 }
 

@@ -36,4 +36,12 @@ routerJogador.delete('/:id',
                     middlewareJogador.autorizaProfessor, 
                     controllerJogador.excluir)
 
+routerJogador.patch('/:id/transferir',
+                    middlewareGlobal.validaUUID,
+                    middlewareJogador.idTemJogador,
+                    middlewareAuth.autenticacao,
+                    middlewareJogador.existeEquipe,
+                    middlewareJogador.autorizaProfessor,
+                    controllerJogador.transferir)
+                                        
 export default routerJogador

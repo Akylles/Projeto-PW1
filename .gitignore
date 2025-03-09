@@ -1,0 +1,40 @@
+# Ignorar configurações locais e arquivos sensíveis
+.env
+.env.local
+.env.development
+.env.production
+
+# Ignorar diretório de dependências do Node.js
+node_modules/
+
+# Ignorar arquivos de build
+dist/
+build/
+
+# Ignorar logs e arquivos de depuração
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+logs/
+*.log
+
+# Ignorar cache do Prisma
+prisma/dev.db
+prisma/dev.db-journal
+prisma/.DS_Store
+prisma/migrations/
+
+# Ignorar apenas migrações específicas (caso necessário)
+prisma/migrations/20250307220721_init/
+prisma/migrations/20250308002306_init/
+
+# Ignorar arquivos temporários
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# Ignorar arquivos do sistema operacional
+.DS_Store
+Thumbs.db
