@@ -29,6 +29,9 @@ const login = async (req: Request, res: Response) => {
         res.status(200).send({
             mensagem: "Login autorizado com sucesso",
             professor: professor.nome,
+            id: professor.id,
+            email: professor.email,
+            cref: professor.cref,
             token
         })
     }else{
@@ -61,20 +64,26 @@ const buscarTodos = async (req: Request, res: Response) => {
 }
 
 const atualizar = async (req: Request, res: Response) => {
-    const id = req.professor.id
-    const {nome, cref, email, senha} = req.body
-    const {senha:_, ...professor} = await serviceProfessor.atualizarPorId(id, nome, cref, email, senha)
-    
-    res.status(200).send({
-        mensagem: "Professor atualizado com sucesso",
-        professor: {
-            id: professor.id,
-            nome: professor.nome,
-            cref: cref,
-            email: professor.email
-        }
-    })
-}
+    const id = req.professor.id;
+    const { nome, cref, email, senha } = req.body;
+
+    try {
+        const { senha: _, ...professor } = await serviceProfessor.atualizarPorId(id, nome, cref, email, senha);
+
+        res.status(200).send({
+            mensagem: "Professor atualizado com sucesso",
+            professor: {
+                id: professor.id,
+                nome: professor.nome,
+                cref: professor.cref,
+                email: professor.email
+            }
+        });
+    } catch (error) {
+        console.error("Erro ao atualizar professor:", error);
+        res.status(500).send({ mensagem: "Erro ao atualizar professor." });
+    }
+};
 
 const editarEmailSenha = async (req: Request, res: Response) => {
     const id = req.professor.id

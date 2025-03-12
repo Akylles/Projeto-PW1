@@ -39,19 +39,24 @@ const buscarPorEmail = async (email: string) => await Prisma.professor.findUniqu
 const buscarTodos = async () => await Prisma.professor.findMany()
 
 const atualizarPorId = async (id: string, nome: string, cref: string, email: string, senha: string) => {
-    const senhaHash = await bcrypt.hash(senha, 8)
 
-    const professor = await Prisma.professor.update({
-        where: {id},
-        data: {
-            nome,
-            cref,
-            email,
-            senha: senhaHash
-        }
-    })
+    const dadosAtualizacao: any = {};
 
-    return professor
+    if (nome) dadosAtualizacao.nome = nome;
+    if (cref) dadosAtualizacao.cref = cref;
+    if (email) dadosAtualizacao.email = email;
+
+    if (senha) {
+        const saltRounds = 12;
+        dadosAtualizacao.senha = await bcrypt.hash(senha, saltRounds);
+    }
+
+    const professorAtualizado = await Prisma.professor.update({
+        where: { id },
+        data: dadosAtualizacao,
+    });
+
+    return professorAtualizado;
 }
 
 const editarEmailSenha = async (id: string, email: string, senha: string) => {
