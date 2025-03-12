@@ -17,7 +17,7 @@ const autenticacao = async (req: Request, res: Response, next: NextFunction) => 
     }
 
     const token = autorizacao.split(' ')[1]
-    const senhaJWT = process.env.JWT_SENHA || ''
+    const senhaJWT = process.env.JWT_SECRET || ''
 
     try {
         const payload = jwt.verify(token, senhaJWT) as PayloadJWT    

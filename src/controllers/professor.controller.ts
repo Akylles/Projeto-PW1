@@ -23,7 +23,7 @@ const login = async (req: Request, res: Response) => {
 
     if(autoriza){
         const {senha:_, ...professor} = req.professor
-        const senhaJWT = process.env.JWT_SENHA || ''
+        const senhaJWT = process.env.JWT_SECRET || ''
         const token = jwt.sign({id: professor.id}, senhaJWT, {expiresIn: '1d'})
 
         res.status(200).send({

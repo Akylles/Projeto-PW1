@@ -5,9 +5,19 @@ import path from 'path'
 
 const cadastrar = async (req: Request, res: Response) => {
     const {descricao, data, campus, latitude, longitude} = req.body
-    const img_local = req.file?.filename || "NOT FOUND"
-    const id_professor = req.professor.id
 
+    console.log("Recebendo no backend:", req.file);
+
+    if (!req.file) {
+        return res.status(400).json({ mensagem: "A imagem é obrigatória" });
+    }
+
+    const img_local = req.file?.filename || "NOT FOUND"
+    const id_professor = req.professor?.id;
+
+    if (!id_professor) {
+        return res.status(401).send({ mensagem: "ERRO: Professor não autenticado." });
+    }
     const torneio = await serviceTorneio.cadastrar(descricao, data, campus, img_local, Number(latitude), Number(longitude), id_professor)
 
     res.status(201).send({

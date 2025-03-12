@@ -11,7 +11,7 @@ const cadastrar = async (descricao: string, data: string, campus: string,
             img_local,
             latitude,
             longitude,
-            id_professor
+            professor: { connect: { id: id_professor } } 
         }
     })
 
