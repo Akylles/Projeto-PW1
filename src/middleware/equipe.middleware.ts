@@ -3,6 +3,7 @@ import serviceEquipe from "../services/equipe.service";
 import serviceTorneio from "../services/torneio.service";
 
 const permiteCadastro = async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Chegou aqui")
     const nome = req.body.nome
     
     const equipes = await serviceEquipe.buscarTodos()
@@ -59,7 +60,15 @@ const idTemEquipe = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const existeTorneio = async (req: Request, res: Response, next: NextFunction) => {
+    console.log("ℹ️ ID recebido no middleware:" + req.params.id + req.body.id_torneio);
+
     const id = req.body.id_torneio
+    
+    console.log("ℹ️ ID do torneio recebido no middleware existeTorneio:", id);
+
+    if (!id) {
+        return res.status(400).json({ mensagem: "Erro: ID do torneio é obrigatório!" });
+    }
     const torneio = await serviceTorneio.buscarPorId(id)
     
     if(!torneio){

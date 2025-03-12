@@ -1,5 +1,7 @@
 import Prisma from "../database/prisma.database";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 const cadastrar = async (descricao: string, data: string, campus: string, 
     img_local: string, latitude: number, longitude: number, id_professor: string) => {
     
@@ -18,11 +20,15 @@ const cadastrar = async (descricao: string, data: string, campus: string,
     return torneio
 }
 
-const buscarPorId = async (id: string) => await Prisma.torneio.findUnique({ 
-    where: {
-        id: id}
-    })
+export const buscarPorId = async (id: string) => {
+    if (!id) {
+        throw new Error("Erro: ID do torneio não pode ser undefined!");
+    }
 
+    return prisma.torneio.findUnique({
+        where: { id },
+    });
+};
 
 const buscarTodos = async () => await Prisma.torneio.findMany()
 
@@ -44,7 +50,24 @@ const atualizarPorId = async (id: string, descricao: string, data: string, campu
     return professor
 }
 
-const deletar = async (id: string) => await Prisma.torneio.delete({where: {id}})
+export const deletar = async (id: string) => {
+  try {
+    await prisma.equipe.deleteMany({
+      where: {
+        id_torneio: id,
+      },
+    });
+
+    await prisma.torneio.delete({
+      where: { id },
+    });
+
+    return { mensagem: "Torneio deletado com sucesso!" };
+  } catch (error) {
+    console.error("Erro ao deletar torneio:", error);
+    throw new Error("Não foi possível excluir o torneio. Verifique se ele não tem dependências.");
+  }
+};
 
 
 const serviceTorneio = {

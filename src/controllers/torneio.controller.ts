@@ -61,21 +61,32 @@ const atualizar = async (req: Request, res: Response) => {
 
 
 const excluir = async (req: Request, res: Response) => {
-    const id = req.params.id
-    const torneio = await serviceTorneio.deletar(id)
+    const id = req.params.id;
 
-    const caminhoImagem = path.join(path.resolve(), "uploads", torneio.img_local)
-    
-    unlink(caminhoImagem, (err) => {
-        if (err) throw err;
-        console.log(`${caminhoImagem} foi deletado com sucesso`);
-    });
+    const torneio = await serviceTorneio.buscarPorId(id);
+
+    if (!torneio) {
+        return res.status(404).json({ mensagem: "Torneio não encontrado!" });
+    }
+
+    if (torneio.img_local) {
+        const caminhoImagem = path.join(path.resolve(), "uploads", torneio.img_local);
+
+        unlink(caminhoImagem, (err) => {
+            if (err) {
+                console.error("Erro ao deletar imagem:", err);
+            } else {
+                console.log(`${caminhoImagem} foi deletado com sucesso`);
+            }
+        });
+    }
+
+    await serviceTorneio.deletar(id);
 
     res.status(200).send({
-        mensagem: "Torneio deletado com sucesso",
-        torneio
-    })
-}
+        mensagem: "Torneio deletado com sucesso!"
+    });
+};
 
 
 const controllerTorneio = {
