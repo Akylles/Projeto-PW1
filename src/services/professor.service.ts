@@ -1,7 +1,7 @@
 import Prisma from "../database/prisma.database";
 import bcrypt from "bcrypt"
 
-const cadastrar = async (nome: string, cref: string, email: string, senha: string) => {
+const cadastrar = async (nome: string, cref: string, email: string, senha: string, imagem: string) => {
     const senhaHash = await bcrypt.hash(senha, 8)
 
     const usuario = await Prisma.professor.create({
@@ -9,7 +9,8 @@ const cadastrar = async (nome: string, cref: string, email: string, senha: strin
             nome: nome,
             cref: cref,
             email: email,
-            senha: senhaHash
+            senha: senhaHash,
+            imagem: imagem
         }
     })
 
@@ -38,13 +39,17 @@ const buscarPorEmail = async (email: string) => await Prisma.professor.findUniqu
 
 const buscarTodos = async () => await Prisma.professor.findMany()
 
-const atualizarPorId = async (id: string, nome: string, cref: string, email: string, senha: string) => {
+const atualizarPorId = async (id: string, nome: string, cref: string, email: string, senha: string, imagem: string) => {
 
     const dadosAtualizacao: any = {};
 
     if (nome) dadosAtualizacao.nome = nome;
     if (cref) dadosAtualizacao.cref = cref;
     if (email) dadosAtualizacao.email = email;
+
+    if (imagem) {
+        dadosAtualizacao.imagem = imagem;
+    }
 
     if (senha) {
         const saltRounds = 12;

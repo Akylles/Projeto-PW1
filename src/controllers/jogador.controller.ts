@@ -3,8 +3,9 @@ import serviceJogador from '../services/jogador.service'
 
 const cadastrar = async (req: Request, res: Response) => {
     const {nome, posicao, idade, matricula, id_equipe} = req.body
+    const imagem  = req.file?.filename || "NOT FOUND";
 
-    const equipe = await serviceJogador.cadastrar(nome, posicao, idade, matricula, id_equipe)
+    const equipe = await serviceJogador.cadastrar(nome, posicao, idade, matricula, id_equipe, imagem)
 
     res.status(201).send({
         mensagem: "Jogador criado com sucesso",
@@ -30,8 +31,9 @@ const buscarTodos = async (req: Request, res: Response) => {
 const atualizar = async (req: Request, res: Response) => {
     const id = req.params.id
     const {nome, posicao, idade, matricula, id_equipe} = req.body
+    const imagem  = req.file?.filename || "NOT FOUND";
 
-    const jogador = await serviceJogador.atualizarPorId(id, nome, posicao, idade, matricula)
+    const jogador = await serviceJogador.atualizarPorId(id, nome, posicao, idade, matricula, imagem)
 
     res.status(200).send({
         mensagem: "Jogador atualizado com sucesso",

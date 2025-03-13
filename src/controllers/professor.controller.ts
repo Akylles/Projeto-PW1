@@ -7,7 +7,9 @@ import jwt from 'jsonwebtoken'
 const cadastrar = async (req: Request, res: Response) => {
     const {nome, cref, email, senha} = req.body
 
-    const {senha:_, ...Professor} = await serviceProfessor.cadastrar(nome, cref, email, senha)
+    const imagem  = req.file?.filename || "NOT FOUND";
+
+    const {senha:_, ...Professor} = await serviceProfessor.cadastrar(nome, cref, email, senha, imagem)
 
     res.status(201).send({
         mensagem: "Professor criado com sucesso",
@@ -66,9 +68,10 @@ const buscarTodos = async (req: Request, res: Response) => {
 const atualizar = async (req: Request, res: Response) => {
     const id = req.professor.id;
     const { nome, cref, email, senha } = req.body;
+    const imagem  = req.file?.filename || "NOT FOUND";
 
     try {
-        const { senha: _, ...professor } = await serviceProfessor.atualizarPorId(id, nome, cref, email, senha);
+        const { senha: _, ...professor } = await serviceProfessor.atualizarPorId(id, nome, cref, email, senha, imagem);
 
         res.status(200).send({
             mensagem: "Professor atualizado com sucesso",

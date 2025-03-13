@@ -17,6 +17,7 @@ model Professor {
   email String @unique
   senha String
   torneios Torneio[]
+  imagem String?
 
   @@map("professor")
 }
@@ -55,6 +56,7 @@ model Jogador {
   posicao String
   idade Int
   matricula String
+  imagem String? 
 
   equipe Equipe @relation(fields: [id_equipe], references: [id])
   id_equipe String

@@ -3,10 +3,12 @@ import middlewareAuth from '../middleware/auth.middleware'
 import middlewareGlobal from '../middleware/global.middleware'
 import middlewareJogador from '../middleware/jogador.middleware'
 import controllerJogador from '../controllers/jogador.controller'
+import { upload } from '../middleware/upload'
 
 const routerJogador = express.Router()
 
 routerJogador.post('/', 
+                    upload.single('imagem'),
                     middlewareJogador.permiteCadastro, 
                     middlewareAuth.autenticacao, 
                     middlewareJogador.existeEquipe,
@@ -21,6 +23,7 @@ routerJogador.get('/:id',
 routerJogador.get('/', controllerJogador.buscarTodos)
 
 routerJogador.put('/:id', 
+                    upload.single('imagem'),
                     middlewareGlobal.validaUUID, 
                     middlewareJogador.idTemJogador,
                     middlewareAuth.autenticacao, 
