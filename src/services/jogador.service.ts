@@ -16,24 +16,18 @@ const buscarPorId = async (id: string) => await Prisma.jogador.findUnique({where
 
 const buscarTodos = async () => await Prisma.jogador.findMany()
 
-const atualizarPorId = async (id: string, nome: string, posicao: string, idade: number, matricula: string, imagem: string) => {
-    const dadosAtualizacao: any = {};
-
-    if (nome) dadosAtualizacao.nome = nome;
-    if (posicao) dadosAtualizacao.cref = posicao;
-    if (idade) dadosAtualizacao.email = idade;
-    if (matricula) dadosAtualizacao.matricula = matricula;
-
-    if (imagem) {
-        dadosAtualizacao.imagem = imagem;
-    }
-
-    await Prisma.jogador.update({
-        where: {id},
-        data: dadosAtualizacao
-    })
-} 
-
+export const atualizarPorId = async (id: string, data: {
+    nome: string;
+    posicao: string;
+    idade: number;
+    matricula: string;
+    imagem: string;
+}) => {
+    return Prisma.jogador.update({
+        where: { id },
+        data,
+    });
+};
 
 const atualizarTime = async (id: string, id_equipe: string) => {
     return await Prisma.jogador.update({
@@ -45,6 +39,8 @@ const atualizarTime = async (id: string, id_equipe: string) => {
     
 const deletar = async (id: string) => await Prisma.jogador.delete({where: {id}})
 
+const deletarPorEquipe = async (id_equipe: string) =>
+  await Prisma.jogador.deleteMany({ where: { id_equipe } });
 
 const serviceJogador = {
     cadastrar,
@@ -52,7 +48,8 @@ const serviceJogador = {
     buscarTodos,
     atualizarPorId,
     atualizarTime,
-    deletar
+    deletar,
+    deletarPorEquipe
 }
 
 export default serviceJogador

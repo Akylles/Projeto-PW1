@@ -4,15 +4,18 @@ import routerTorneio from './routes/torneio.router'
 import routerEquipe from './routes/equipe.router'
 import routerJogador from './routes/jogador.route'
 import cors from 'cors';
-import multer from 'multer';
+import path from 'path';
 import 'dotenv/config'
 
-const app = express()
+const app = express();
 
-const upload = multer({ dest: 'uploads/' });
+app.use(
+    '/uploads',
+    express.static(path.join(__dirname, '..', 'uploads'))
+  );
 
-app.use(cors({ // 🔹 Adiciona CORS para permitir o frontend acessar
-    origin: 'http://localhost:5173', // Permite apenas o frontend acessar
+app.use(cors({
+    origin: 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));

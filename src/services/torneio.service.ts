@@ -1,5 +1,6 @@
 import Prisma from "../database/prisma.database";
 import { PrismaClient } from "@prisma/client";
+import serviceEquipe from "./equipe.service";
 
 const prisma = new PrismaClient();
 const cadastrar = async (descricao: string, data: string, campus: string, 
@@ -52,17 +53,15 @@ const atualizarPorId = async (id: string, descricao: string, data: string, campu
 
 export const deletar = async (id: string) => {
   try {
-    await prisma.equipe.deleteMany({
-      where: {
-        id_torneio: id,
-      },
+      const equipesDoTorneio = await Prisma.equipe.findMany({
+      where: { id_torneio: id }
     });
 
-    await prisma.torneio.delete({
-      where: { id },
-    });
+    for (const equipe of equipesDoTorneio) {
+      await serviceEquipe.deletar(equipe.id);
+    }
 
-    return { mensagem: "Torneio deletado com sucesso!" };
+    return await Prisma.torneio.delete({ where: { id } });
   } catch (error) {
     console.error("Erro ao deletar torneio:", error);
     throw new Error("Não foi possível excluir o torneio. Verifique se ele não tem dependências.");

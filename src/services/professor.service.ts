@@ -27,7 +27,8 @@ const buscarPorId = async (id: string) => await Prisma.professor.findUnique({
         cref: true,
         email: true,
         senha: true,
-       torneios: true
+       torneios: true,
+       imagem: true
     }
 })
 

@@ -1,4 +1,5 @@
 import Prisma from "../database/prisma.database";
+import serviceJogador from "./jogador.service";
 
 const cadastrar = async (nome: string, lema: string, id_torneio: string) => 
     await Prisma.equipe.create({
@@ -21,8 +22,10 @@ const atualizarPorId = async (id: string, nome: string, lema: string) =>
     })
 
     
-const deletar = async (id: string) => await Prisma.equipe.delete({where: {id}})
-
+const deletar = async (id: string) => {
+    await serviceJogador.deletarPorEquipe(id);
+    return await Prisma.equipe.delete({ where: { id } });
+  };
 
 const serviceEquipe = {
     cadastrar,
