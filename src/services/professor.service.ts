@@ -1,25 +1,40 @@
 import Prisma from "../database/prisma.database";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
-const cadastrar = async (nome: string, cref: string, email: string, senha: string, imagem: string) => {
-    const senhaHash = await bcrypt.hash(senha, 8)
+const cadastrar = async (nome: string, cref: string, email: string, senha: string) => {
+    try {
+        // Verificando se o email já está cadastrado
+        const usuarioExistente = await Prisma.professor.findUnique({
+            where: { email },
+        });
 
-    const usuario = await Prisma.professor.create({
-        data: {
-            nome: nome,
-            cref: cref,
-            email: email,
-            senha: senhaHash,
-            imagem: imagem
+        if (usuarioExistente) {
+            throw new Error("Email já cadastrado");
         }
-    })
 
-    return usuario
-}
+        // Gerando o hash da senha
+        const senhaHash = await bcrypt.hash(senha, 8);
 
-const buscarPorId = async (id: string) => await Prisma.professor.findUnique({ 
+        // Criando o professor no banco de dados
+        const usuario = await Prisma.professor.create({
+            data: {
+                nome: nome,
+                cref: cref,
+                email: email,
+                senha: senhaHash,
+            },
+        });
+
+        return usuario;
+    } catch (error: any) { // Tipando o erro como 'any'
+        throw new Error(`Erro ao cadastrar o professor: ${error.message}`);
+    }
+};
+
+
+const buscarPorId = async (id: string) => await Prisma.professor.findUnique({
     where: {
-        id: id
+        id: parseInt(id), // Converte o id de string para número
     },
     select: {
         id: true,
@@ -27,30 +42,23 @@ const buscarPorId = async (id: string) => await Prisma.professor.findUnique({
         cref: true,
         email: true,
         senha: true,
-       torneios: true,
-       imagem: true
     }
-})
+});
 
-const buscarPorEmail = async (email: string) => await Prisma.professor.findUnique({ 
+const buscarPorEmail = async (email: string) => await Prisma.professor.findUnique({
     where: {
         email: email
     }
-})
+});
 
-const buscarTodos = async () => await Prisma.professor.findMany()
+const buscarTodos = async () => await Prisma.professor.findMany();
 
-const atualizarPorId = async (id: string, nome: string, cref: string, email: string, senha: string, imagem: string) => {
-
+const atualizarPorId = async (id: string, nome: string, cref: string, email: string, senha: string) => {
     const dadosAtualizacao: any = {};
 
     if (nome) dadosAtualizacao.nome = nome;
     if (cref) dadosAtualizacao.cref = cref;
     if (email) dadosAtualizacao.email = email;
-
-    if (imagem) {
-        dadosAtualizacao.imagem = imagem;
-    }
 
     if (senha) {
         const saltRounds = 12;
@@ -58,7 +66,7 @@ const atualizarPorId = async (id: string, nome: string, cref: string, email: str
     }
 
     const professorAtualizado = await Prisma.professor.update({
-        where: { id },
+        where: { id: parseInt(id) }, // Converte o id de string para número
         data: dadosAtualizacao,
     });
 
@@ -69,7 +77,7 @@ const editarEmailSenha = async (id: string, email: string, senha: string) => {
     const senhaHash = await bcrypt.hash(senha, 8)
 
     const professor = await Prisma.professor.update({
-        where: {id},
+        where: { id: parseInt(id) }, // Converte o id de string para número
         data: {
             email,
             senha: senhaHash
@@ -79,9 +87,9 @@ const editarEmailSenha = async (id: string, email: string, senha: string) => {
     return professor
 }
 
-
-const deletar = async (id: string) => await Prisma.professor.delete({where: {id}})
-
+const deletar = async (id: string) => await Prisma.professor.delete({
+    where: { id: parseInt(id) } // Converte o id de string para número
+});
 
 const serviceProf = {
     cadastrar,
@@ -93,4 +101,4 @@ const serviceProf = {
     deletar
 }
 
-export default serviceProf
+export default serviceProf;
