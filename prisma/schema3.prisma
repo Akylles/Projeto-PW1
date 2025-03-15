@@ -30,7 +30,7 @@ model Professor {
   senha     String
 
   torneios  Torneio[]
-  equipes   Equipe[] // Agora um professor pode ser técnico de várias equipes
+  equipes   Equipe[]
 
   @@map("professor")
 }
@@ -48,7 +48,7 @@ model Torneio {
   professor   Professor @relation(fields: [id_professor], references: [id])
   id_professor String
 
-  equipes     EquipeTorneio[] // Agora um torneio pode ter várias equipes e vice-versa
+  equipes     EquipeTorneio[]
 
   @@map("torneio")
 }
@@ -64,7 +64,7 @@ model Equipe {
   id_tecnico String
 
   jogadores  JogadorEquipe[]
-  torneios   EquipeTorneio[] // Agora uma equipe pode jogar em vários torneios
+  torneios   EquipeTorneio[]
 
   @@map("equipe")
 }
@@ -76,7 +76,7 @@ model Jogador {
   idade     Int
   matricula String
 
-  equipes   JogadorEquipe[] // Jogador pode estar em várias equipes
+  equipes   JogadorEquipe[]
 
   @@map("jogador")
 }
