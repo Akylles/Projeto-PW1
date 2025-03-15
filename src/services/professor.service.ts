@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 
 const cadastrar = async (nome: string, cref: string, email: string, senha: string) => {
     try {
-        // Verificando se o email já está cadastrado
         const usuarioExistente = await Prisma.professor.findUnique({
             where: { email },
         });
@@ -12,10 +11,8 @@ const cadastrar = async (nome: string, cref: string, email: string, senha: strin
             throw new Error("Email já cadastrado");
         }
 
-        // Gerando o hash da senha
         const senhaHash = await bcrypt.hash(senha, 8);
 
-        // Criando o professor no banco de dados
         const usuario = await Prisma.professor.create({
             data: {
                 nome: nome,
@@ -26,7 +23,7 @@ const cadastrar = async (nome: string, cref: string, email: string, senha: strin
         });
 
         return usuario;
-    } catch (error: any) { // Tipando o erro como 'any'
+    } catch (error: any) {
         throw new Error(`Erro ao cadastrar o professor: ${error.message}`);
     }
 };
@@ -34,7 +31,7 @@ const cadastrar = async (nome: string, cref: string, email: string, senha: strin
 
 const buscarPorId = async (id: string) => await Prisma.professor.findUnique({
     where: {
-        id: parseInt(id), // Converte o id de string para número
+        id,
     },
     select: {
         id: true,
@@ -66,7 +63,7 @@ const atualizarPorId = async (id: string, nome: string, cref: string, email: str
     }
 
     const professorAtualizado = await Prisma.professor.update({
-        where: { id: parseInt(id) }, // Converte o id de string para número
+        where: { id },
         data: dadosAtualizacao,
     });
 
@@ -77,7 +74,7 @@ const editarEmailSenha = async (id: string, email: string, senha: string) => {
     const senhaHash = await bcrypt.hash(senha, 8)
 
     const professor = await Prisma.professor.update({
-        where: { id: parseInt(id) }, // Converte o id de string para número
+        where: { id },
         data: {
             email,
             senha: senhaHash
@@ -88,7 +85,7 @@ const editarEmailSenha = async (id: string, email: string, senha: string) => {
 }
 
 const deletar = async (id: string) => await Prisma.professor.delete({
-    where: { id: parseInt(id) } // Converte o id de string para número
+    where: { id }
 });
 
 const serviceProf = {
